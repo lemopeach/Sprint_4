@@ -1,22 +1,18 @@
-import org.junit.After;
+package com.scooter;
+
+import com.scooter.pageobjects.HomePage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import page_object.HomePage;
 
 @RunWith(Parameterized.class)
-public class TestOpenQuestionsChrome {
-
-    private WebDriver driver;
+public class TestOpenQuestions extends BaseTest {
 
     private final int number;
     private final String Question;
     private final String Answer;
 
-    public TestOpenQuestionsChrome(int number, String Question, String Answer) {
+    public TestOpenQuestions(int number, String Question, String Answer) {
         this.number = number;
         this.Question = Question;
         this.Answer = Answer;
@@ -25,7 +21,7 @@ public class TestOpenQuestionsChrome {
     // Тестовые данные
     @Parameterized.Parameters
     public static Object[][] getCredentials() {
-        return new Object[][] {
+        return new Object[][]{
                 {0, "Сколько это стоит? И как оплатить?", "Сутки — 400 рублей. Оплата курьеру — наличными или картой."},
                 {1, "Хочу сразу несколько самокатов! Так можно?", "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."},
                 {2, "Как рассчитывается время аренды?", "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30."},
@@ -39,18 +35,9 @@ public class TestOpenQuestionsChrome {
 
 
     @Test
-    public void checkOpenQuestion(){
-        driver = new ChromeDriver();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-
-        HomePage objHP = new HomePage(driver);
-
-        objHP.checkPresenceOfBlock();
-        objHP.checkElements(number,Question,Answer);
-    }
-
-    @After
-    public void tearDown() {
-        driver.quit();
+    public void checkOpenQuestion() {
+        new HomePage(driver)
+                .checkPresenceOfBlock()
+                .checkElements(number, Question, Answer);
     }
 }

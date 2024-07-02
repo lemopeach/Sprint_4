@@ -1,18 +1,11 @@
-package page_object;
+package com.scooter.pageobjects;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-public class RentPage {
-    public WebDriver driver;
-
+public class RentPage extends BasePage {
     public Actions action;
 
     //Заголовок страницы. По нему мы определим, что страница загрузилась
@@ -22,7 +15,7 @@ public class RentPage {
     public By startDate = By.xpath(".//input[@placeholder='* Когда привезти самокат']");
 
     //Кнопка для выбора периода аренды
-    public  By periodOfRent = By.className("Dropdown-control");
+    public By periodOfRent = By.className("Dropdown-control");
 
     //Чекбокс. Цвет самоката - черный
     public By checkboxBlack = By.id("black");
@@ -42,58 +35,50 @@ public class RentPage {
     //Кнопка "Да" вспылвающего окна
     public By yesButton = By.xpath(".//button[contains(@*,'Button_Button__ra12g Button_Middle__1CSJM') and text()='Да']");
 
-    public By correctPeriod(String Period){
-        return By.xpath(".//*[text()='"+Period+"']");
-    }
-
     //Заголовок всплывающего окна об успешном создании заказа
     public By floatLastHeader = By.xpath(".//div[@class='Order_ModalHeader__3FDaJ' and text()='Заказ оформлен']");
 
-    public RentPage(WebDriver driver){
-        this.driver = driver;
+    public RentPage(WebDriver driver) {
+        super(driver);
         this.action = new Actions(driver);
     }
 
-    public void enterDataForOrder(String startDateOfClient, String periodOfClient, boolean blackForClient, boolean greyForClient, String commFromClient){
+    public By correctPeriod(String Period) {
+        return By.xpath(".//*[text()='" + Period + "']");
+    }
 
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(headerOfRentPage)); //Проверяем, что страница загрузилась
+    public RentPage enterDataForOrder(String startDateOfClient, String periodOfClient, boolean blackForClient, boolean greyForClient, String commFromClient) {
+
+        visibleElement(headerOfRentPage); //Проверяем, что страница загрузилась
 
         driver.findElement(startDate).sendKeys(startDateOfClient);//Заполняем поле Дата
         action.sendKeys(Keys.ESCAPE).build().perform();//Нажимаем кнопку esc, чтобы перейти дальше
-
         driver.findElement(periodOfRent).click(); //Нажимаем на выбор периода
-
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(correctPeriod(periodOfClient))); //Проверяем, что выпадающий список открылся
-
-        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(correctPeriod(periodOfClient))); //Листаем до нужного периода
-
+        visibleElement(correctPeriod(periodOfClient)); //Проверяем, что выпадающий список открылся
+        scrollPage(correctPeriod(periodOfClient)); //Листаем до нужного периода
         driver.findElement(correctPeriod(periodOfClient)).click(); //выбираем нужный период
 
-        if(blackForClient){
+        if (blackForClient) {
             driver.findElement(checkboxBlack).click(); //Устанавливаем черный цвет
         }
 
-        if(greyForClient){
+        if (greyForClient) {
             driver.findElement(checkboxGrey).click(); //Устанавливаем серый цвет
         }
 
         driver.findElement(placeForComment).sendKeys(commFromClient); //Добавяем коммантарий
+        return this;
 
     }
 
-    public void pressCreateOrderButton(){
+    public RentPage pressCreateOrderButton() {
         driver.findElement(createOrderButton).click(); // Нажимаем кнопку "Заказать"
-
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(floatHeader)); // Проверяем, что всплывающее окно открылось
-
-        driver.findElement(yesButton).click(); //Нажимаем кнопк "Да"
+        visibleElement(floatHeader); // Проверяем, что всплывающее окно открылось
+        driver.findElement(yesButton).click();
+        return this;//Нажимаем кнопк "Да"
     }
 
-    public void checkSuccessOrder(){
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(floatLastHeader)); // Проверяем, что окно с подтверждением успеха открылось
+    public void checkSuccessOrder() {
+        visibleElement(floatLastHeader); // Проверяем, что окно с подтверждением успеха открылось
     }
 }
