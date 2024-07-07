@@ -10,12 +10,14 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 
 import java.time.Duration;
 
 public class BaseTest {
 
     protected WebDriver driver;
+    protected Actions action;
 
     @Before
     public void setUpDriver() {
@@ -25,6 +27,7 @@ public class BaseTest {
         driver.get(PageURL.url);
         setCookie(new Cookie("Cartoshka", "true"));
         setCookie(new Cookie("Cartoshka-legacy", "true"));
+        action = new Actions(driver);
     }
 
     @After

@@ -1,4 +1,4 @@
-package com.scooter.pageobjects;
+package com.scooter.withoutinterface.pageobjects;
 
 import com.scooter.constants.WaitTime;
 import org.openqa.selenium.By;

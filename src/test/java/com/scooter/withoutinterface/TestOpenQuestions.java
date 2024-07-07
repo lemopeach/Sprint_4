@@ -1,6 +1,7 @@
-package com.scooter;
+package com.scooter.withoutinterface;
 
-import com.scooter.pageobjects.HomePage;
+import com.scooter.BaseTest;
+import com.scooter.withoutinterface.pageobjects.HomePage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
